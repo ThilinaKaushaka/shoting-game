@@ -21,6 +21,12 @@ class Scene1 extends Phaser.Scene{
         this.load.spritesheet("beam","../../assets/images/spritesheets/beam/beam.png",{frameWidth:16,frameHeight:16});
     
         this.load.bitmapFont("pixelFont","../../assets/font/font.png","../../assets/font/font.xml");
+        
+        this.load.audio("audio_beam",["../../assets/audio/beam.ogg"],["../../assets/audio/beam.mp3"]);
+        this.load.audio("audio_explosion",["../../assets/audio/explosion.ogg"],["../../assets/audio/explosion.mp3"]);
+        this.load.audio("audio_pickup",["../../assets/audio/pickup.ogg"],["../../assets/audio/pickup.mp3"]);
+        this.load.audio("music",["../../assets/audio/sci-fi_platformer12.ogg"],["../../assets/audio/sci-fi_platformer12.mp3"]);
+
     }
 
     create(){
