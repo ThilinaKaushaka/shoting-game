@@ -73,7 +73,33 @@ class Scene2 extends Phaser.Scene{
         this.physics.add.overlap(this.player,this.enemies,this.hurtPlayer,null,this);
 
         this.physics.add.overlap(this.projectiles,this.enemies,this.hitEnemy,null,this);
+        
+        var graphics = this.add.graphics();
+        graphics.fillStyle("Black");
+        graphics.beginPath();
+        graphics.moveTo(0, 0);
+        graphics.lineTo(config.width, 0);
+        graphics.lineTo(config.width, 20);
+        graphics.lineTo(0, 20);
+        graphics.lineTo(0, 0);
+        graphics.closePath();
+        graphics.fillPath();
+
+        this.score=0;
+        this.scoreLable=this.add.bitmapText(10,5,"pixelFont","SCORE : ",16);
     }
+
+    zeroPad(number,size){
+        var stringNumber=String(number);
+        while(stringNumber.length<(size||2)){
+            stringNumber="0"+stringNumber;
+        }
+
+        return stringNumber;
+
+    }
+
+
 
     pickPowerUp(player,powerUp){
         powerUp.disableBody(true,true);
@@ -81,13 +107,56 @@ class Scene2 extends Phaser.Scene{
 
     hurtPlayer(player,enemy){
         this.resetShipPosition(enemy);
+
+        if (this.player.alpha<1) {
+            return;
+        }
+
+        var explosion=new Explosion(this,player.x,player.y)
+
         player.x=config.width / 2-8;
         player.y=config.height-64;
+    
+        player.disableBody(true,true);
+        
+        this.time.addEvent({
+            delay:1000,
+            callback:this.resetPlayer,
+            callbackScope:this,
+            loop:false
+        });
+    }
+
+    resetPlayer(){
+        var x=config.width / 2-8;
+        var y=config.height+64;
+
+        this.player.enableBody(true,x,y,true,true);
+
+        this.player.alpha=0.5;
+        
+        var tween=this.tweens.add({
+            targets:this.player,
+            y:config.height-64,
+            ease:'Power1',
+            duration:1500,
+            repeat:0,
+            onComplete:function(){
+                this.player.alpha=1;
+            },
+            callbackScope:this
+        });
+
     }
 
     hitEnemy(projectile,enemy){
+        var explosion=new Explosion(this,enemy.x,enemy.y);
+
         projectile.destroy();
         this.resetShipPosition(enemy);
+        this.score+=10;
+        var scoreFormated=this.zeroPad(this.score,6);
+        this.scoreLable.text="SCORE : "+scoreFormated;
     }
 
 
@@ -101,7 +170,9 @@ class Scene2 extends Phaser.Scene{
         this.movePlayerManager();
 
         if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-            this.shootBeam();    
+            if(this.player.active){
+                this.shootBeam();    
+            }
         }
 
         for(var i=0;i<this.projectiles.getChildren().length;i++){

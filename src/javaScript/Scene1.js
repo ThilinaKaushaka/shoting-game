@@ -19,6 +19,8 @@ class Scene1 extends Phaser.Scene{
         this.load.spritesheet("power-up","../../assets/images/spritesheets/power-up/power-up.png",{frameWidth:16,frameHeight:16});
         this.load.spritesheet("player","../../assets/images/spritesheets/player/player.png",{frameWidth:16,frameHeight:24});
         this.load.spritesheet("beam","../../assets/images/spritesheets/beam/beam.png",{frameWidth:16,frameHeight:16});
+    
+        this.load.bitmapFont("pixelFont","../../assets/font/font.png","../../assets/font/font.xml");
     }
 
     create(){
